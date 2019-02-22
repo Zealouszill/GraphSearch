@@ -46,6 +46,28 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
     :return: We will return a list of nodes indicating
     the path from the startIndex to the targetIndex
     or if that doesn't exist, we will return that there is non.
+    
+    
+    q = PriorityQueue()
+    clock = 0
+    q.push(s, priority = 0)
+    
+    parent = {}
+    cost = {}
+    
+    while q is not empty:
+        
+        p = q.pop()
+        
+        if p == destination then return path (p, parents)
+        
+        for b in g[p]:
+                
+            if parent[b] = p
+            cost[b] = cost[p] + weight(p,b)
+            q.path(b, priority = -clock++)
+            
+    
 
     """
 
