@@ -20,8 +20,6 @@ class Node:
         return self._nodeIndex
 
     _nodeIndex = 0
-    _preClock = 0
-    _postClock = 0
 
     isVisited = False
 
@@ -66,72 +64,59 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
             if parent[b] = p
             cost[b] = cost[p] + weight(p,b)
             q.path(b, priority = -clock++)
-            
-    
-
     """
 
     nodePath = PriorityQueue()
 
-    nodePath.add(startNode)
+    clock = 0
+    nodePath.add(startNode, clock)
 
-    print("Starting the next depthFirstSearch MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+    parent = []
 
-    previsit(startNode.getNodeIndex())
+    print("Starting the next depthFirstSearch")
 
-    for nextNode in passedAdjacencyList[startNode.getNodeIndex()]:
+    while len(nodePath) != 0:
 
-        print("This is the next node:", nextNode.getNodeIndex())
+        print("Start of while loop")
+        #print(printOutNodePath(nodePath))
 
-        startNode.isVisited = True;
-        nodePath = Explore(nextNode, passedAdjacencyList, nodePath, targetNode)
+        p = nodePath.pop()
+        print("This is p right after we pop", p.getNodeIndex())
+        parent.append(p.getNodeIndex())
+        print("This is our parent", parent)
 
-    print("After the search")
-
-    nodePathList = []
-
-
-
-    for eachNode in range(len(nodePath)):
-        print("This is the value:", nodePath.peek())
-        nodePathList = nodePathList + [nodePath.pop().getNodeIndex()]
+        print("p is currently", p.getNodeIndex())
 
 
-    postvisit(startNode.getNodeIndex())
+        if p == targetNode:
+            print("We are returning target node")
+            return parent
 
-    return nodePathList
+        for b in passedAdjacencyList[p.getNodeIndex()]:
 
+            if b.isVisited == False:
+                print("b is currently", b.getNodeIndex())
+                clock = clock + 1
+                nodePath.add(b, clock)
 
+                print("We are peeking:", nodePath.peek().getNodeIndex())
+                print("passing into the printout", b.getNodeIndex())
+                #printOutNodePath(nodePath)
 
-def Explore(currentNode, passedAdjacencyList, nodePath, targetNode):
-
-    previsit(currentNode.getNodeIndex())
-
-
-    if currentNode == targetNode:
-        nodePath.add(targetNode)
-        return nodePath
-
-    currentNode.isVisited = True
-
-    #print("Next Node,", passedAdjacencyList[currentNode.getNodeIndex()])
-
-    for nextNode in passedAdjacencyList[currentNode.getNodeIndex()]:
-
-        if not nextNode.isVisited == True:
+        print("")
 
 
-            nodePath = Explore(nextNode, passedAdjacencyList, nodePath, targetNode)
+    return parent
 
+def printOutNodePath(nodePath2):
 
-    nodePath.add(currentNode)
+    print("")
+    print("Start printing out")
+    for b in range(len(nodePath2)):
+        print("Printing out nodePath:", nodePath2.peek().getNodeIndex())
 
-    postvisit(currentNode.getNodeIndex())
-
-    return nodePath
-
-
-
+    print("Stop printing out")
+    print("")
 
 
 ##############################################################
@@ -175,6 +160,8 @@ def test_DepthFirstSearch():
     assert adjacencyList1[7][0].getNodeIndex() == node2.getNodeIndex()
 
     assert depthFirstSearch(adjacencyList1, node0, node5) == [0,4,7,2,5]
+    assert depthFirstSearch(adjacencyList1, node4, node5) == [4,7,2,5]
+    assert depthFirstSearch(adjacencyList1, node6, node3) == [6, 0, 1, 3]
 
 
 def test_NodeClassNodeIndexWorks():
@@ -197,6 +184,15 @@ def test_PriorityQueueExperimentation():
     assert pQueue.pop() == 6
     assert pQueue.pop() == 5
     assert pQueue.pop() == 3
+
+    pQueue = PriorityQueue()
+
+    pQueue.add(1,1)
+    pQueue.add(4,2)
+
+    assert pQueue.pop() == 4
+    assert pQueue.pop() == 1
+
 
 
 def test_SortedPriorityQueueExperimentation():
