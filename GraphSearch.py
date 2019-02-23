@@ -9,22 +9,6 @@ from boltons.queueutils import PriorityQueue
 from boltons.queueutils import SortedPriorityQueue
 from collections import defaultdict
 
-
-class Node:
-
-    def __init__(self, number):
-        self._nodeIndex = number
-
-
-    def getNodeIndex(self):
-        return self._nodeIndex
-
-    _nodeIndex = 0
-
-    isVisited = False
-
-
-
 def previsit(v):
     print("Visiting: %s" % v)
 
@@ -64,6 +48,8 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
             if parent[b] = p
             cost[b] = cost[p] + weight(p,b)
             q.path(b, priority = -clock++)
+
+    https://stackoverflow.com/questions/12864004/tracing-and-returning-a-path-in-depth-first-search
     """
 
     nodePath = PriorityQueue()
@@ -72,6 +58,10 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
     nodePath.add(startNode, clock)
 
     parent = []
+
+    parentMap = []
+
+    isVisited = []
 
     print("Starting the next depthFirstSearch")
 
@@ -82,15 +72,21 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
 
         p = nodePath.pop()
         print("This is p right after we pop", p.getNodeIndex())
-        parent.append(p.getNodeIndex())
-        print("This is our parent", parent)
+        print("This is our parent", parentMap)
 
         print("p is currently", p.getNodeIndex())
 
+        curr = targetNode
 
         if p == targetNode:
-            print("We are returning target node")
+            while(p != None):
+                print("We are returning target node")
+
+                parent.append(p)
+                p = parentMap[curr]
+
             return parent
+
 
         for b in passedAdjacencyList[p.getNodeIndex()]:
 
@@ -98,6 +94,7 @@ def depthFirstSearch(passedAdjacencyList, startNode, targetNode):
                 print("b is currently", b.getNodeIndex())
                 clock = clock + 1
                 nodePath.add(b, clock)
+                parentMap[b.getNodeIndex()] = p
 
                 print("We are peeking:", nodePath.peek().getNodeIndex())
                 print("passing into the printout", b.getNodeIndex())
@@ -128,47 +125,18 @@ def test_DepthFirstSearch():
 
     adjacencyList1 = defaultdict(list)
 
-    node0 = Node(0)
-    node1 = Node(1)
-    node2 = Node(2)
-    node3 = Node(3)
-    node4 = Node(4)
-    node5 = Node(5)
-    node6 = Node(6)
-    node7 = Node(7)
-
-    assert node0.getNodeIndex() == 0
-    assert node1.getNodeIndex() == 1
-    assert node2.getNodeIndex() == 2
-    assert node3.getNodeIndex() == 3
-    assert node4.getNodeIndex() == 4
-    assert node5.getNodeIndex() == 5
-    assert node6.getNodeIndex() == 6
-    assert node7.getNodeIndex() == 7
-
-    adjacencyList1[0].extend([node1, node4])
-    adjacencyList1[1].extend([node3])
-    adjacencyList1[2].extend([node5])
+    adjacencyList1[0].extend([1, 4])
+    adjacencyList1[1].extend([3])
+    adjacencyList1[2].extend([5])
     adjacencyList1[3].extend([])
-    adjacencyList1[4].extend([node6, node7])
-    adjacencyList1[5].extend([node1])
-    adjacencyList1[6].extend([node0])
-    adjacencyList1[7].extend([node2])
+    adjacencyList1[4].extend([6, 7])
+    adjacencyList1[5].extend([1])
+    adjacencyList1[6].extend([0])
+    adjacencyList1[7].extend([2])
 
-    assert adjacencyList1[0][0].getNodeIndex() == node1.getNodeIndex()
-    assert adjacencyList1[0][1].getNodeIndex() == node4.getNodeIndex()
-    assert adjacencyList1[7][0].getNodeIndex() == node2.getNodeIndex()
-
-    assert depthFirstSearch(adjacencyList1, node0, node5) == [0,4,7,2,5]
-    assert depthFirstSearch(adjacencyList1, node4, node5) == [4,7,2,5]
-    assert depthFirstSearch(adjacencyList1, node6, node3) == [6, 0, 1, 3]
-
-
-def test_NodeClassNodeIndexWorks():
-
-    node1 = Node(1)
-
-    assert node1.getNodeIndex() == 1
+    assert depthFirstSearch(adjacencyList1, 0, 5) == [0,4,7,2,5]
+    assert depthFirstSearch(adjacencyList1, 4, 5) == [4,7,2,5]
+    assert depthFirstSearch(adjacencyList1, 6, 3) == [6, 0, 1, 3]
 
 
 def test_PriorityQueueExperimentation():
